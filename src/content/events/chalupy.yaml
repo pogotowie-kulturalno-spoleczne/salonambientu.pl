@@ -34,7 +34,7 @@ partners:
   - agnella
   - harmony
 fbUrl: https://www.facebook.com/events/1980220912633833/
-# Sampled off the edition poster - dusty rose canvas, soft peach glow.
+# From the edition poster: rgb(203 163 163) canvas, rgb(245 196 179) glow.
 colors:
-  canvas: '#cba3a1'
-  glow: '#ffd6cc'
+  canvas: '#cba3a3'
+  glow: '#f5c4b3'
