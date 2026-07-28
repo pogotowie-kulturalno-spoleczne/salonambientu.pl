@@ -1,0 +1,75 @@
+---
+import Layout from '../layouts/Layout.astro';
+import EventList from '../components/EventList.astro';
+import { getAllEvents } from '../lib/events';
+import { defaultPalette, type ThemeKey } from '../lib/themes';
+
+// Archive: all editions, oldest to newest. Backed by YAML now,
+// swappable to WordPress + GraphQL via src/lib/events.ts.
+const events = await getAllEvents();
+
+// The homepage rests on the house yellow; hovering an edition swaps in its
+// own pair, and leaving the list falls back here.
+const defaultTheme: ThemeKey = 'home';
+const palettes = [
+  { key: defaultTheme, palette: defaultPalette },
+  ...events.map((e) => ({ key: e.themeKey, palette: e.palette })),
+];
+
+// The poster is one cycle; the year block reads off the editions themselves.
+const years = [...new Set(events.map((e) => e.month.slice(0, 4)))];
+const cycleYear = years.join('/');
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      name: 'Salony Ambientu',
+      url: Astro.site?.toString(),
+      inLanguage: 'pl-PL',
+    },
+    // Unannounced editions are left out entirely — structured data would
+    // publish exactly what the blurred rows are hiding.
+    ...events.filter((e) => !e.secret).map((e) => ({
+      '@type': 'MusicEvent',
+      name: e.title,
+      // Day-precision once announced, month-precision until then.
+      startDate: e.date ? e.date.toISOString().slice(0, 10) : e.month,
+      eventStatus: 'https://schema.org/EventScheduled',
+      eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+      location: {
+        '@type': 'Place',
+        name: e.venue ?? e.location,
+        address: e.address ?? e.city ?? e.location,
+      },
+      performer: e.artists.map((a) => ({ '@type': 'MusicGroup', name: a })),
+      organizer: (e.organizers ?? []).map((o) => ({ '@type': 'Organization', name: o })),
+      url: new URL(`/wydarzenia/${e.id}`, Astro.site).toString(),
+    })),
+  ],
+};
+---
+
+<Layout defaultTheme={defaultTheme} palettes={palettes}>
+  <script
+    type="application/ld+json"
+    slot="head"
+    set:html={JSON.stringify(jsonLd)}
+  />
+
+  <main class="relative z-1 flex flex-1 flex-col gap-section">
+    <h1 class="headline text-hero">Cykl<br />Salonów Ambientu</h1>
+
+    {
+      events.length > 0 ? (
+        <EventList events={events} defaultTheme={defaultTheme} />
+      ) : (
+        <p class="text-event">Brak wydarzeń. Zajrzyj wkrótce.</p>
+      )
+    }
+
+    {/* Pinned to the bottom-right of the key visual, as on the poster. */}
+    <p class="headline text-hero mt-auto text-right leading-[0.94]">{cycleYear}</p>
+  </main>
+</Layout>

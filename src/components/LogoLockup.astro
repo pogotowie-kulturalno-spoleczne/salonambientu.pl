@@ -1,0 +1,48 @@
+---
+import type { Partner } from '../lib/partners';
+
+interface Props {
+  logos: Partner[];
+  class?: string;
+}
+
+const { logos, class: className = '' } = Astro.props;
+
+/**
+ * Figma heights (35/40/45px on a 1080px artboard) scaled fluidly:
+ * 45px = 4.17vw, 40px = 3.70vw, 35px = 3.24vw.
+ */
+function heightStyle(height: number) {
+  const vw = ((height / 1080) * 100).toFixed(2);
+  const min = (height / 45) * 1.6;
+  const max = (height / 45) * 2.8;
+  return `height: clamp(${min.toFixed(2)}rem, ${vw}vw, ${max.toFixed(2)}rem)`;
+}
+---
+
+<div class:list={['flex flex-wrap items-center gap-x-10 gap-y-6', className]}>
+  {
+    logos.map((logo) => {
+      const inner = logo.src ? (
+        <img
+          class="w-auto object-contain"
+          style={heightStyle(logo.height)}
+          src={logo.src}
+          alt={logo.label}
+          loading="lazy"
+        />
+      ) : (
+        <span class="text-[0.75rem] font-medium tracking-[0.02em] uppercase">
+          {logo.label}
+        </span>
+      );
+      return logo.href ? (
+        <a href={logo.href} target="_blank" rel="noopener noreferrer">
+          {inner}
+        </a>
+      ) : (
+        inner
+      );
+    })
+  }
+</div>

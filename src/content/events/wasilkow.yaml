@@ -1,0 +1,24 @@
+id: wasilkow
+title: VII Nadrzeczny Salon Ambientu
+edition: VII
+location: Wasilków
+city: Wasilków
+month: 2026-07
+organizers:
+  - UTDF
+invitation: 'UTDF zaprasza na:'
+artists:
+  - Tomasz Mreńca live
+  - Botanica
+  - Dtekk
+# keys into the partner database in src/lib/partners.ts
+partners:
+  - moak
+  - agnella
+  - harmony
+  - wodociagi
+fbUrl: https://www.facebook.com/events/1698508531458002
+# The mauve pair from the 2026 cycle key visual.
+colors:
+  canvas: '#c6b2cd'
+  glow: '#ffd1c8'

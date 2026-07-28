@@ -1,0 +1,55 @@
+---
+import EventRow from './EventRow.astro';
+import { groupByMonth, type EventView } from '../lib/events';
+
+interface Props {
+  events: EventView[];
+  /** Reverted-to theme when nothing is hovered (soonest event). */
+  defaultTheme: string;
+}
+
+const { events, defaultTheme } = Astro.props;
+const months = groupByMonth(events);
+---
+
+{/* Poster list: one heading per month, editions stacked underneath. */}
+<div id="event-list" class="flex w-full flex-col gap-mgroup" data-default-theme={defaultTheme}>
+  {
+    months.map((group) => (
+      <section class="flex flex-col gap-mrow">
+        <h2 class="text-month capitalize leading-[0.84]">{group.label}</h2>
+        <ul class="flex flex-col gap-mrow">
+          {group.events.map((e) => (
+            <EventRow event={e} />
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</div>
+
+<script>
+  // Desktop progressive enhancement: hovering/focusing an event re-themes the
+  // background. On leave/blur, revert to the soonest-event default.
+  const list = document.getElementById('event-list');
+  const bg = document.getElementById('poster-bg');
+
+  if (list && bg) {
+    const defaultTheme = list.dataset.defaultTheme ?? bg.dataset.theme ?? '';
+
+    const setTheme = (theme: string) => {
+      if (theme) bg.dataset.theme = theme;
+    };
+
+    list.querySelectorAll<HTMLElement>('[data-theme]').forEach((row) => {
+      const theme = row.dataset.theme ?? '';
+      row.addEventListener('mouseenter', () => setTheme(theme));
+      row.addEventListener('focusin', () => setTheme(theme));
+    });
+
+    list.addEventListener('mouseleave', () => setTheme(defaultTheme));
+    list.addEventListener('focusout', (e) => {
+      if (!list.contains(e.relatedTarget as Node)) setTheme(defaultTheme);
+    });
+  }
+</script>

@@ -1,0 +1,15 @@
+---
+import LogoLockup from './LogoLockup.astro';
+import { partnersByKey } from '../lib/partners';
+
+interface Props {
+  /** keys into the partner database in src/lib/partners.ts */
+  keys: readonly string[];
+  class?: string;
+}
+
+const { keys, class: className = '' } = Astro.props;
+const logos = partnersByKey(keys);
+---
+
+{logos.length > 0 && <LogoLockup logos={logos} class={className} />}

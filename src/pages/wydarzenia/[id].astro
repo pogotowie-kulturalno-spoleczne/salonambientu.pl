@@ -1,0 +1,59 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import EventPoster from '../../components/EventPoster.astro';
+import { getPublicEvents } from '../../lib/events';
+
+export async function getStaticPaths() {
+  // Announced editions only — a secret edition gets no URL to find.
+  const events = await getPublicEvents();
+  return events.map((event) => ({
+    params: { id: event.id },
+    props: { event },
+  }));
+}
+
+const { event } = Astro.props;
+const title = `${event.title} | Salony Ambientu`;
+
+// Built from whatever the edition has announced so far.
+const when = event.date
+  ? new Intl.DateTimeFormat('pl-PL', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    }).format(event.date)
+  : new Intl.DateTimeFormat('pl-PL', {
+      month: 'long',
+      year: 'numeric',
+      timeZone: 'UTC',
+    }).format(new Date(`${event.month}-01T00:00:00Z`));
+
+const description = [
+  `${event.title}.`,
+  `${when}, ${event.venue ?? event.location}.`,
+  event.artists.length ? `Line-up: ${event.artists.join(', ')}.` : 'Line-up wkrótce.',
+].join(' ');
+---
+
+<Layout
+  title={title}
+  description={description}
+  defaultTheme={event.themeKey}
+  palettes={[{ key: event.themeKey, palette: event.palette }]}
+  partnerKeys={event.partners}
+  ogPath={`/wydarzenia/${event.id}/og.png`}
+>
+  {/* Floating control rather than a link above the headline — anything in the
+      flow there pushes the title off the key visual and breaks the effect. */}
+  <a
+    class="fixed bottom-gutter left-gutter z-20 flex size-12 items-center justify-center rounded-full bg-ink text-lg text-[var(--canvas)] no-underline transition-transform duration-200 hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none"
+    href="/"
+    aria-label="Wróć do wszystkich edycji"
+  >
+    &larr;
+  </a>
+
+  <main class="relative z-1 flex flex-1 flex-col">
+    <EventPoster event={event} />
+  </main>
+</Layout>

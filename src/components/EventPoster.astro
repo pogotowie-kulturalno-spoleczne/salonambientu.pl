@@ -1,0 +1,121 @@
+---
+import type { EventView } from '../lib/events';
+
+interface Props {
+  event: EventView;
+}
+
+const { event } = Astro.props;
+const {
+  title,
+  date,
+  month,
+  time,
+  venue,
+  location,
+  artists,
+  invitation,
+  details,
+  fbUrl,
+} = event;
+
+// Day-precision once the date is announced, month-precision until then.
+const dayFormat = new Intl.DateTimeFormat('pl-PL', {
+  weekday: 'long',
+  day: '2-digit',
+  month: '2-digit',
+  year: 'numeric',
+});
+const monthFormat = new Intl.DateTimeFormat('pl-PL', {
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+
+const rawDate = date
+  ? dayFormat.format(date)
+  : monthFormat.format(new Date(`${month}-01T00:00:00Z`));
+const dateFormatted = rawDate.charAt(0).toUpperCase() + rawDate.slice(1);
+
+// Right-hand note: whatever the edition spells out, else what we can derive.
+const detailLines = details ?? [dateFormatted, venue, location, time].filter(Boolean);
+
+/**
+ * The poster sets a trailing "live" in the light roman rather than the medium
+ * caps the name uses. Split it off so the markup can do the same.
+ */
+function splitLive(name: string): [string, string | null] {
+  const match = name.match(/^(.*?)\s+(live)$/i);
+  return match ? [match[1], match[2].toLowerCase()] : [name, null];
+}
+---
+
+<article class="flex flex-1 flex-col gap-section">
+  <div class="flex flex-col gap-7">
+    {
+      (invitation || detailLines.length > 0) && (
+        <div class="flex flex-wrap justify-between gap-x-8 gap-y-3 text-[0.9rem] leading-[1.4] font-medium">
+          {invitation && <p class="max-w-[24ch]">{invitation}</p>}
+          {detailLines.length > 0 && (
+            <div class="ml-auto flex flex-col text-right">
+              {detailLines.map((line) => (
+                <span>{line}</span>
+              ))}
+            </div>
+          )}
+        </div>
+      )
+    }
+
+    <h1 class="headline text-title">{title}</h1>
+
+    {
+      artists.length > 0 ? (
+        <ul class="headline text-artist leading-[1.1]">
+          {artists.map((a) => {
+            const [name, live] = splitLive(a.name);
+            const inner = (
+              <>
+                {name}
+                {live && (
+                  <span class="font-normal tracking-normal normal-case"> {live}</span>
+                )}
+              </>
+            );
+            return (
+              <li>
+                {a.url ? (
+                  <a
+                    class="no-underline hover:underline focus-visible:underline focus-visible:outline-none"
+                    href={a.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {inner}
+                  </a>
+                ) : (
+                  inner
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <p class="text-artist font-medium">Line-up wkrótce.</p>
+      )
+    }
+
+    {
+      fbUrl && (
+        <a
+          class="mt-2 self-start rounded-full bg-ink px-6 py-[0.85rem] text-[0.95rem] font-medium text-[var(--canvas)] no-underline transition-transform duration-200 hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none"
+          href={fbUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Wydarzenie na Facebooku &rarr;
+        </a>
+      )
+    }
+  </div>
+</article>

@@ -1,0 +1,43 @@
+---
+import type { EventView } from '../lib/events';
+
+interface Props {
+  event: EventView;
+}
+
+const { event } = Astro.props;
+const { id, title, location, secret, themeKey: theme } = event;
+
+const rowClass = 'flex items-baseline justify-between gap-4';
+const titleClass = 'headline text-event leading-[0.75]';
+const placeClass = 'shrink-0 text-right text-place leading-[0.8] whitespace-nowrap';
+---
+
+{
+  secret ? (
+    /* Unannounced edition. `title` and `location` are fixed placeholder
+       strings in the YAML — there is nothing real to hide here, and no link
+       or id that could point at a page. */
+    <li data-theme={theme}>
+      <div class={rowClass}>
+        <span class={`${titleClass} blur-[0.22em] select-none`} aria-hidden="true">
+          {title}
+        </span>
+        <span class={`${placeClass} blur-[0.22em] select-none`} aria-hidden="true">
+          {location}
+        </span>
+        <span class="sr-only">Kolejna edycja — szczegóły wkrótce</span>
+      </div>
+    </li>
+  ) : (
+    <li data-event={id} data-theme={theme}>
+      <a
+        class={`group ${rowClass} no-underline transition-[padding-left] duration-200 hover:pl-3 focus-visible:pl-3 focus-visible:outline-none`}
+        href={`/wydarzenia/${id}`}
+      >
+        <span class={titleClass}>{title}</span>
+        <span class={placeClass}>{location}</span>
+      </a>
+    </li>
+  )
+}

@@ -1,0 +1,22 @@
+---
+import Partners from './Partners.astro';
+import { sitePartners } from '../lib/partners';
+
+interface Props {
+  /** edition-only partner keys, appended to the site-wide set */
+  extraKeys?: readonly string[];
+}
+
+const { extraKeys = [] } = Astro.props;
+
+// One list, deduped: an edition partner that is already shown site-wide does
+// not get a second lockup.
+const keys = [...new Set([...sitePartners, ...extraKeys])];
+
+// Sits below the key visual on the flat canvas, as in the Figma layout.
+// Funding marks live with the grant disclosure (GrantNotice).
+---
+
+<footer class="relative z-1 mt-auto flex w-full max-w-poster pt-section">
+  <Partners keys={keys} />
+</footer>

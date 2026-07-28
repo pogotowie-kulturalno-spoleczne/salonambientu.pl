@@ -1,0 +1,37 @@
+id: chalupy
+title: VIII Pomorski Salon Ambientu
+edition: VIII
+location: Chałupy
+city: Chałupy
+month: 2026-08
+date: 2026-08-15
+time: 17:00–21:00
+venue: Wejście na plażę nr 18
+address: Chałupy
+organizers:
+  - UTDF
+  - Drugi Dom
+invitation: 'UTDF & Drugi Dom zapraszają na:'
+details:
+  - Sobota 15.08.26
+  - Chałupy, wejście
+  - na plażę nr 18
+  - 17:00 – 21:00
+artists:
+  - name: Daniel Szlajnda live
+    url: https://soundcloud.com/danieldrumz
+  - name: Serenity Soundseeker
+    url: https://soundcloud.com/serenitysoundseeker
+  - name: Feelaz
+    url: https://soundcloud.com/feelaz
+  - name: Dtekk
+    url: https://soundcloud.com/dtekk
+# keys into the partner database in src/lib/partners.ts
+partners:
+  - drugidom
+  - agnella
+  - harmony
+# Sampled off the edition poster - dusty rose canvas, soft peach glow.
+colors:
+  canvas: '#cba3a1'
+  glow: '#ffd6cc'

@@ -1,0 +1,33 @@
+---
+/**
+ * The layered key visual, rebuilt from the Figma export.
+ *
+ * Sits behind the poster content only — the logo footer lives below it, on the
+ * flat canvas, exactly as in the Figma story layout.
+ *
+ * On the 944x1437 artboard the export gives:
+ *   glow rect  944x1437, radius 43.18 (4.57%), blurred sigma 38.86 (4.12%)
+ *   sharp rect inset 90/69 -> 765x1298, square corners, canvas-colored
+ *   pills      centred, canvas-colored, each with a larger blurred glow behind
+ *
+ * Both sharp shapes are filled with the canvas color; they only read because
+ * of the blurred duplicates behind them.
+ *
+ * Color vars (--canvas / --glow) are inherited from #poster-bg on the wrap.
+ */
+---
+
+<div class="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
+  <div class="absolute inset-0 rounded-[4.57%/3%] bg-[var(--glow)] blur-[var(--kv-blur)]">
+  </div>
+
+  {/* Sharp rectangle, and the size container the pills measure themselves
+      against. `kv-frame` carries the portrait/landscape switch (global.css):
+      a wide frame lays the pill down, as in the cover-photo layout. */}
+  <div
+    class="kv-frame absolute inset-x-[9.5%] inset-y-[4.8%] flex items-center justify-center bg-[var(--canvas)]"
+  >
+    <div class="kv-pill kv-pill--glow bg-[var(--glow)] blur-[var(--kv-blur)]"></div>
+    <div class="kv-pill kv-pill--sharp bg-[var(--canvas)]"></div>
+  </div>
+</div>

@@ -1,0 +1,104 @@
+---
+import '../styles/global.css';
+import KeyVisual from '../components/KeyVisual.astro';
+import Footer from '../components/Footer.astro';
+import GrantNotice from '../components/GrantNotice.astro';
+import { themeBlocks, type ThemeKey, type ThemePalette } from '../lib/themes';
+
+interface Props {
+  title?: string;
+  description?: string;
+  defaultTheme: ThemeKey;
+  /** Palettes this page can switch between on hover. */
+  palettes?: { key: ThemeKey; palette: ThemePalette }[];
+  /** Extra partner keys for the footer, on top of the site-wide ones. */
+  partnerKeys?: readonly string[];
+  /** Site-relative path to this page's generated social card. */
+  ogPath?: string;
+}
+
+const {
+  title = 'Salony Ambientu | Muzyka ambient na żywo',
+  // Deliberately city-free: unannounced editions must not leak through meta.
+  description = 'Cykl Salonów Ambientu — spotkania z muzyką ambient na żywo. Sprawdź nadchodzące edycje i pełny line-up.',
+  defaultTheme,
+  palettes = [],
+  partnerKeys = [],
+  ogPath = '/og.png',
+} = Astro.props;
+
+const themeStyles = themeBlocks(palettes);
+
+const siteName = 'Salony Ambientu';
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(ogPath, Astro.site);
+
+// Adobe Fonts (Typekit) kit serving Neue Haas Grotesk Display Pro.
+// Inter Tight stays as the self-hosted metrics-close fallback (global.css).
+const TYPEKIT_KIT_ID = 'wpm5boa';
+---
+
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonical} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#f3c962" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:locale" content="pl_PL" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Salony Ambientu" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    {
+      TYPEKIT_KIT_ID && (
+        <>
+          <link rel="preconnect" href="https://use.typekit.net" />
+          <link rel="preconnect" href="https://p.typekit.net" crossorigin />
+          <link rel="stylesheet" href={`https://use.typekit.net/${TYPEKIT_KIT_ID}.css`} />
+        </>
+      )
+    }
+
+    <slot name="head" />
+  </head>
+  <body>
+    {/* Poster wrap: flat canvas across the whole poster, carrying the palette
+        vars every layer inherits. The grant disclosure below runs on paper. */}
+    <div
+      id="poster-bg"
+      data-theme={defaultTheme}
+      class="relative flex min-h-dvh flex-col items-center gap-section overflow-hidden bg-[var(--canvas)] p-gutter text-ink"
+    >
+      {/* The glow only backs the content; the logo footer sits below it on the
+          flat canvas, as in the Figma layout. */}
+      <div class="relative flex w-full max-w-poster flex-1 flex-col">
+        <KeyVisual />
+        <slot />
+      </div>
+
+      <Footer extraKeys={partnerKeys} />
+    </div>
+
+    <style is:inline set:html={themeStyles}></style>
+
+    <GrantNotice />
+  </body>
+</html>

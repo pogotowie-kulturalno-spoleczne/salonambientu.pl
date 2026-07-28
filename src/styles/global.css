@@ -1,0 +1,135 @@
+@import "tailwindcss";
+
+/* Self-hosted fallback grotesk (loads instantly, offline-safe).
+   Neue Haas Grotesk Display Pro is served over Typekit from Layout.astro
+   and takes precedence in the stack below when the kit ID is set. */
+@import "@fontsource-variable/inter-tight";
+
+@theme {
+  /* Neue Haas (Typekit) first, Inter Tight as metrics-close fallback. */
+  --font-display: "neue-haas-grotesk-display", "Inter Tight Variable", system-ui, sans-serif;
+
+  /* Poster ink - the near-black from the key visual (#150015). */
+  --color-ink: #150015;
+
+  /* Paper - what shows below the poster wrap (grant disclosure). */
+  --color-paper: #fff;
+
+  /* Shared content column: max-w-poster. */
+  --container-poster: 68rem;
+
+  /* Fluid poster type scale. Ratios lifted from the Figma poster, where the
+     1080px-wide artboard sets: hero/year 150, event 42.13, month 37.55,
+     place 36.07. Everything is expressed relative to the event line. */
+  --text-hero: clamp(2.75rem, 11vw, 9rem);
+  --text-event: clamp(1.2rem, 3.55vw, 2.6rem);
+  --text-month: clamp(1.05rem, 3.16vw, 2.32rem);
+  --text-place: clamp(1rem, 3.04vw, 2.23rem);
+  --text-title: clamp(2.5rem, 9vw, 6rem);
+  /* Line-up reads nearly as loud as the title on the edition posters. */
+  --text-artist: clamp(1.5rem, 5.2vw, 3.5rem);
+  --text-lead: clamp(1rem, 2.5vw, 1.35rem);
+
+  /* Fluid page rhythm. Poster gutter is 65/1080 = 6vw. */
+  --spacing-gutter: clamp(1.5rem, 6vw, 4.5rem);
+  --spacing-section: clamp(2.5rem, 6vw, 5rem);
+  /* 50px between month groups, 10.99px between a month and its rows. */
+  --spacing-mgroup: clamp(1.75rem, 4.6vw, 3.5rem);
+  --spacing-mrow: clamp(0.4rem, 1vw, 0.8rem);
+}
+
+@layer base {
+  html {
+    font-family: var(--font-display);
+    /* Approximates Adobe "Kerning: Optical". */
+    font-kerning: normal;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    /* The key visual is scoped to the poster wrap; everything below it
+       (grant disclosure) runs on plain paper. */
+    background: var(--color-paper);
+  }
+}
+
+/* Headline utility: 65 Medium equivalent + poster tracking (-10 = -0.01em).
+   Leading 0.9 matches the poster title (135/150). */
+@utility headline {
+  font-family: var(--font-display);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  line-height: 0.9;
+}
+
+/* ---- Layered key-visual background ----
+   Layout lives in utility classes on PosterBackground.astro; only the bits
+   Tailwind can't express stay here: @property registrations (needed so the
+   colors interpolate) and the custom-property transition.
+   Per-theme color vars are injected inline by PosterBackground.astro. */
+
+/* Per-event pair: canvas (background) + glow. Registered so they interpolate. */
+@property --canvas { syntax: "<color>"; inherits: true; initial-value: #f3c962; }
+@property --glow { syntax: "<color>"; inherits: true; initial-value: #fffdf0; }
+
+#poster-bg {
+  /* Figma blurs both glow layers with sigma 38.86 on a 944px-wide artboard
+     (4.12%). CSS blur() takes a length, so scale it off the viewport. */
+  --kv-blur: clamp(1.25rem, 3.6vw, 3.5rem);
+
+  /* Animate only the color vars. Children inherit the interpolated values
+     each frame, so every layer + glow shifts in sync. */
+  transition:
+    --canvas 700ms ease,
+    --glow 700ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #poster-bg {
+    transition-duration: 0ms;
+  }
+}
+
+/* ---- Key-visual pill orientation ----
+   Figma ships two layouts: the portrait poster stands the pill up, the
+   landscape cover photo lays it down. Which one applies is a question about
+   the frame's own aspect ratio, which utilities cannot ask — hence the
+   container query. Sizes are the poster ratios either way, and the shorter
+   axis is capped against the longer one so `border-radius: infinity` always
+   resolves to true semicircles on the two ends. */
+
+.kv-frame {
+  container-type: size;
+  container-name: kv;
+}
+
+.kv-pill {
+  position: absolute;
+  border-radius: calc(infinity * 1px);
+}
+
+.kv-pill--glow {
+  height: 86.1cqh;
+  width: min(75.6cqw, 44.6cqh);
+}
+
+.kv-pill--sharp {
+  height: 75.1cqh;
+  width: min(57cqw, 33.6cqh);
+}
+
+@container kv (min-aspect-ratio: 1/1) {
+  .kv-pill--glow {
+    width: 86.1cqw;
+    height: min(75.6cqh, 44.6cqw);
+  }
+
+  .kv-pill--sharp {
+    width: 75.1cqw;
+    height: min(57cqh, 33.6cqw);
+  }
+}

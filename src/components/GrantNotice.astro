@@ -1,0 +1,76 @@
+---
+import Partners from './Partners.astro';
+import { funders } from '../lib/partners';
+
+// MKiDN / NIMiT grant disclosure - required wording, do not paraphrase.
+// Sits below the poster wrap, on plain paper, so the key visual ends with it.
+const grant = {
+  task: 'Cykl Salonów Ambientu',
+  funding: 136_500,
+  total: 195_000,
+  signed: new Date('2026-06-10'),
+};
+
+const plnFormat = new Intl.NumberFormat('pl-PL', {
+  style: 'currency',
+  currency: 'PLN',
+  minimumFractionDigits: 2,
+});
+
+const dateFormat = new Intl.DateTimeFormat('pl-PL', {
+  day: '2-digit',
+  month: '2-digit',
+  year: 'numeric',
+});
+
+const facts = [
+  { label: 'Tytuł zadania', value: grant.task },
+  { label: 'Wartość dofinansowania', value: plnFormat.format(grant.funding) },
+  { label: 'Wartość zadania', value: plnFormat.format(grant.total) },
+  { label: 'Data podpisania umowy', value: dateFormat.format(grant.signed) },
+];
+---
+
+<div class="flex flex-col items-center gap-8 px-gutter py-12 text-ink">
+  <section
+    class="grid w-full max-w-poster gap-x-12 gap-y-6 text-[0.8rem] leading-[1.5] md:grid-cols-2"
+    aria-labelledby="grant-heading"
+  >
+    <div class="flex flex-col gap-6">
+      <h2 id="grant-heading" class="font-medium">
+        Cykl Salonów Ambientu dofinansowano ze środków Ministra Kultury i
+        Dziedzictwa Narodowego pochodzących z Funduszu Promocji Kultury w ramach
+        programu „Muzyka”, realizowanego przez Narodowy Instytut Muzyki i Tańca.
+      </h2>
+
+      <dl class="grid gap-x-8 gap-y-2 sm:grid-cols-[auto_1fr]">
+        {
+          facts.map((fact) => (
+            <div class="contents">
+              <dt class="opacity-60">{fact.label}</dt>
+              <dd class="font-medium">{fact.value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+
+    <div>
+      <h3 class="opacity-60">Zadanie</h3>
+      <p class="mt-1">
+        Cykl Salonów Ambientu zapoczątkuje spójną koncepcję zbudowaną wokół
+        zagadnienia dobrostanu, każdorazowo eksplorując inne jego aspekty. Dzięki
+        zróżnicowanym środkom wyrazu i zabiegom immersyjnym stworzone zostanie
+        kameralne środowisko odbioru pozwalające na oddanie się w pełni
+        kontaktowi z muzyką i skupienie na własnym wnętrzu. Instalacje świetlne
+        autorstwa Aliaksandra Pravalinskiego, narracja prowadzona przez aktorów
+        młodego pokolenia, polscy i międzynarodowi muzycy ambientowi oraz
+        charakterystyczne scenografie stanowić będą spójnie wybrzmiewającą
+        koncepcję. Planowane jest 5 wydarzeń w dużych miastach i na peryferiach.
+      </p>
+    </div>
+  </section>
+
+  {/* Funding marks belong with the wording they certify, not in the footer. */}
+  <Partners keys={funders} class="w-full max-w-poster" />
+</div>
