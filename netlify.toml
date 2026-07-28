@@ -1,0 +1,7 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  # Astro 7 needs 20.19+ / 22.12+; sharp and satori run the OG image build.
+  NODE_VERSION = "22"
