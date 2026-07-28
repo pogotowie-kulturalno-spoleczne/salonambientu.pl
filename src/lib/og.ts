@@ -13,147 +13,287 @@ const fontDir = join(process.cwd(), 'src/assets/fonts');
 const medium = readFileSync(join(fontDir, 'InterTight-Medium.ttf'));
 const regular = readFileSync(join(fontDir, 'InterTight-Regular.ttf'));
 
-interface OgInput {
+const INK = '#150015';
+
+const GRANT_LINE =
+  'Dofinansowano ze środków Ministra Kultury i Dziedzictwa Narodowego pochodzących ' +
+  'z Funduszu Promocji Kultury w ramach programu „Muzyka”, realizowanego przez ' +
+  'Narodowy Instytut Muzyki i Tańca.';
+
+type Node = Record<string, unknown>;
+
+const div = (style: Record<string, unknown>, children?: unknown): Node => ({
+  type: 'div',
+  props: children === undefined ? { style } : { style, children },
+});
+
+const text = (style: Record<string, unknown>, content: string): Node =>
+  div({ display: 'flex', ...style }, content);
+
+/**
+ * The key visual, in its landscape proportions.
+ *
+ * Figma's cover-photo layout sits a 988x551 frame on the canvas and lays the
+ * pill down inside it; the site uses the same ratios (75.1% / 57% of the
+ * frame). Satori has no `filter: blur()`, so each shape is canvas-colored with
+ * a wide, soft box-shadow in the glow color — the same read as a blurred
+ * duplicate sitting behind it.
+ */
+function keyVisual(palette: ThemePalette): Node[] {
+  const glow = `0 0 100px 26px ${palette.glow}`;
+
+  const frame = { left: 96, top: 92, width: OG_WIDTH - 192, height: 442 };
+  const pill = {
+    width: Math.round(frame.width * 0.751),
+    height: Math.round(frame.height * 0.57),
+  };
+
+  return [
+    div({
+      position: 'absolute',
+      ...frame,
+      borderRadius: 22,
+      background: palette.canvas,
+      boxShadow: glow,
+      display: 'flex',
+    }),
+    div({
+      position: 'absolute',
+      left: frame.left + Math.round((frame.width - pill.width) / 2),
+      top: frame.top + Math.round((frame.height - pill.height) / 2),
+      ...pill,
+      borderRadius: 9999,
+      background: palette.canvas,
+      boxShadow: glow,
+      display: 'flex',
+    }),
+  ];
+}
+
+function shell(palette: ThemePalette, children: unknown[]): Node {
+  return div(
+    {
+      width: OG_WIDTH,
+      height: OG_HEIGHT,
+      display: 'flex',
+      position: 'relative',
+      background: palette.canvas,
+      fontFamily: 'Inter Tight',
+      color: INK,
+    },
+    [
+      ...keyVisual(palette),
+      div(
+        {
+          position: 'relative',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          width: '100%',
+          padding: '46px 56px 40px',
+        },
+        children
+      ),
+    ]
+  );
+}
+
+const grantNote = () =>
+  text(
+    {
+      maxWidth: 720,
+      fontSize: 13,
+      fontWeight: 400,
+      lineHeight: 1.35,
+      opacity: 0.65,
+    },
+    GRANT_LINE
+  );
+
+/** Small line pair at the top: who invites, and when / where. */
+function topRow(invitation: string | undefined, details: string[]): Node {
+  return div(
+    {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+      gap: 40,
+      fontSize: 21,
+      fontWeight: 500,
+      lineHeight: 1.3,
+    },
+    [
+      text({ maxWidth: 340, flexDirection: 'column' }, invitation ?? ''),
+      div(
+        {
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-end',
+          textAlign: 'right',
+        },
+        details.map((line) => text({}, line))
+      ),
+    ]
+  );
+}
+
+/** Title size that keeps a two-line headline inside the frame. */
+function titleSize(title: string): number {
+  if (title.length <= 22) return 96;
+  if (title.length <= 32) return 80;
+  return 68;
+}
+
+export interface EventOgInput {
   title: string;
-  /** small line under the title, e.g. "Sierpień 2026 · Chałupy" */
-  subtitle?: string;
-  /** bottom-right stamp, e.g. "2026" */
-  stamp?: string;
+  invitation?: string;
+  details: string[];
+  /** line-up, already split into name + optional "live" suffix */
+  artists: { name: string; live: boolean }[];
   palette: ThemePalette;
 }
 
-/**
- * Social card built from the landscape key visual.
- *
- * Satori has no `filter: blur()`, so the halo is a large, soft box-shadow in
- * the glow color behind a canvas-colored shape — the same read as the site,
- * where a blurred duplicate sits behind each sharp shape.
- */
-function card({ title, subtitle, stamp, palette }: OgInput) {
-  const glowShadow = `0 0 90px 30px ${palette.glow}`;
+/** Edition card, built like the edition's own cover photo. */
+function eventCard(input: EventOgInput): Node {
+  const size = titleSize(input.title);
 
-  return {
-    type: 'div',
-    props: {
-      style: {
-        width: OG_WIDTH,
-        height: OG_HEIGHT,
-        display: 'flex',
-        position: 'relative',
-        background: palette.canvas,
-        fontFamily: 'Inter Tight',
-        color: '#150015',
-      },
-      children: [
-        // Glow rectangle.
+  return shell(input.palette, [
+    topRow(input.invitation, input.details),
+
+    div({ display: 'flex', flexDirection: 'column', gap: 24 }, [
+      text(
         {
-          type: 'div',
-          props: {
-            style: {
-              position: 'absolute',
-              top: 48,
-              left: 56,
-              right: 56,
-              bottom: 48,
-              borderRadius: 28,
-              background: palette.canvas,
-              boxShadow: glowShadow,
-              display: 'flex',
-            },
-          },
+          maxWidth: 900,
+          fontSize: size,
+          fontWeight: 500,
+          lineHeight: 0.94,
+          letterSpacing: '-0.01em',
+          textTransform: 'uppercase',
         },
-        // Laid-down pill, as in the landscape Figma layout.
-        {
-          type: 'div',
-          props: {
-            style: {
-              position: 'absolute',
-              top: 168,
-              left: 300,
-              width: 600,
-              height: 294,
-              borderRadius: 9999,
-              background: palette.canvas,
-              boxShadow: glowShadow,
-              display: 'flex',
-            },
-          },
-        },
-        // Content.
-        {
-          type: 'div',
-          props: {
-            style: {
-              position: 'relative',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              width: '100%',
-              padding: '0 110px',
-            },
-            children: [
-              {
-                type: 'div',
-                props: {
-                  style: {
+        input.title
+      ),
+
+      ...(input.artists.length > 0
+        ? [
+            div(
+              { display: 'flex', flexDirection: 'column', lineHeight: 1.08 },
+              input.artists.map((a) =>
+                div(
+                  {
                     display: 'flex',
-                    fontSize: title.length > 34 ? 68 : 84,
+                    alignItems: 'baseline',
+                    fontSize: 34,
                     fontWeight: 500,
-                    lineHeight: 1,
                     letterSpacing: '-0.01em',
                     textTransform: 'uppercase',
-                    textAlign: 'center',
-                    justifyContent: 'center',
                   },
-                  children: title,
-                },
-              },
-              ...(subtitle
-                ? [
-                    {
-                      type: 'div',
-                      props: {
-                        style: {
-                          display: 'flex',
-                          justifyContent: 'center',
-                          marginTop: 28,
-                          fontSize: 30,
-                          fontWeight: 400,
-                        },
-                        children: subtitle,
-                      },
-                    },
+                  [
+                    text({}, a.name),
+                    ...(a.live
+                      ? [
+                          text(
+                            {
+                              marginLeft: 10,
+                              fontSize: 28,
+                              fontWeight: 400,
+                              textTransform: 'lowercase',
+                              letterSpacing: 0,
+                            },
+                            'live'
+                          ),
+                        ]
+                      : []),
                   ]
-                : []),
-            ],
-          },
-        },
-        ...(stamp
-          ? [
-              {
-                type: 'div',
-                props: {
-                  style: {
-                    position: 'absolute',
-                    right: 96,
-                    bottom: 66,
-                    display: 'flex',
-                    fontSize: 52,
-                    fontWeight: 500,
-                    letterSpacing: '-0.02em',
-                  },
-                  children: stamp,
-                },
-              },
-            ]
-          : []),
-      ],
-    },
-  };
+                )
+              )
+            ),
+          ]
+        : []),
+    ]),
+
+    grantNote(),
+  ]);
 }
 
-export async function renderOgPng(input: OgInput): Promise<Buffer> {
-  const svg = await satori(card(input) as Parameters<typeof satori>[0], {
+export interface SiteOgInput {
+  rows: { month: string; title: string; place: string }[];
+  /** bottom-right stamp, e.g. "2026" */
+  stamp: string;
+  /** shown when some editions are still under wraps */
+  more?: string;
+  palette: ThemePalette;
+}
+
+/** Cycle card: the headline, the announced editions, the year. */
+function siteCard(input: SiteOgInput): Node {
+  return shell(input.palette, [
+    text(
+      {
+        fontSize: 76,
+        fontWeight: 500,
+        lineHeight: 0.94,
+        letterSpacing: '-0.01em',
+        textTransform: 'uppercase',
+      },
+      'Cykl Salonów Ambientu'
+    ),
+
+    div(
+      { display: 'flex', flexDirection: 'column', gap: 18 },
+      input.rows.map((row) =>
+        div({ display: 'flex', flexDirection: 'column' }, [
+          text({ fontSize: 21, fontWeight: 400 }, row.month),
+          div(
+            {
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'baseline',
+              gap: 32,
+              width: '100%',
+            },
+            [
+              text(
+                {
+                  fontSize: 34,
+                  fontWeight: 500,
+                  letterSpacing: '-0.01em',
+                  textTransform: 'uppercase',
+                },
+                row.title
+              ),
+              text({ fontSize: 28, fontWeight: 400 }, row.place),
+            ]
+          ),
+        ])
+      )
+    ),
+
+    div(
+      {
+        display: 'flex',
+        alignItems: 'flex-end',
+        justifyContent: 'space-between',
+        gap: 40,
+        width: '100%',
+      },
+      [
+        grantNote(),
+        text(
+          {
+            fontSize: 76,
+            fontWeight: 500,
+            lineHeight: 0.9,
+            letterSpacing: '-0.02em',
+          },
+          input.stamp
+        ),
+      ]
+    ),
+  ]);
+}
+
+async function render(node: Node): Promise<Buffer> {
+  const svg = await satori(node as Parameters<typeof satori>[0], {
     width: OG_WIDTH,
     height: OG_HEIGHT,
     fonts: [
@@ -164,3 +304,6 @@ export async function renderOgPng(input: OgInput): Promise<Buffer> {
 
   return sharp(Buffer.from(svg)).png().toBuffer();
 }
+
+export const renderEventOg = (input: EventOgInput) => render(eventCard(input));
+export const renderSiteOg = (input: SiteOgInput) => render(siteCard(input));
