@@ -229,7 +229,8 @@ function siteCard(input: SiteOgInput): Node {
   return shell(input.palette, [
     text(
       {
-        fontSize: 76,
+        maxWidth: 900,
+        fontSize: 70,
         fontWeight: 500,
         lineHeight: 0.94,
         letterSpacing: '-0.01em',
@@ -238,9 +239,10 @@ function siteCard(input: SiteOgInput): Node {
       'Cykl Salonów Ambientu'
     ),
 
-    div(
-      { display: 'flex', flexDirection: 'column', gap: 18 },
-      input.rows.map((row) =>
+    // Narrower than the card so the place labels stay tied to their titles
+    // instead of drifting to the far edge.
+    div({ display: 'flex', flexDirection: 'column', gap: 18, width: 920 }, [
+      ...input.rows.map((row) =>
         div({ display: 'flex', flexDirection: 'column' }, [
           text({ fontSize: 21, fontWeight: 400 }, row.month),
           div(
@@ -265,8 +267,11 @@ function siteCard(input: SiteOgInput): Node {
             ]
           ),
         ])
-      )
-    ),
+      ),
+      ...(input.more
+        ? [text({ fontSize: 26, fontWeight: 400, opacity: 0.7 }, input.more)]
+        : []),
+    ]),
 
     div(
       {
