@@ -9,7 +9,10 @@ const { event } = Astro.props;
 const { id, title, location, secret, themeKey: theme } = event;
 
 const rowClass = 'flex items-baseline justify-between gap-4';
-const titleClass = 'headline text-event leading-[0.75] text-balance';
+// The poster's 0.75 leading assumes a one-line title. Narrow screens wrap it,
+// and at that leading the lines collide — so it only tightens once the row has
+// room to stay on a single line.
+const titleClass = 'headline text-event leading-[0.95] lg:leading-[0.75] text-balance';
 const placeClass = 'shrink-0 text-right text-place leading-[0.8] whitespace-nowrap';
 ---
 
