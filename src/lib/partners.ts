@@ -45,8 +45,8 @@ export const partners = {
     src: '/logos/fundacja-dont-worry.svg',
     height: 40,
   },
-  // No logo file yet — these render as their name until one lands.
-  drugidom: { label: 'Drugi Dom', height: 40 },
+  drugidom: { label: 'Drugi Dom', src: '/logos/drugi-dom.svg', height: 32 },
+  // No logo file yet — renders as its name until one lands.
   wodociagi: { label: 'Wodociągi Białostockie', height: 40 },
 } as const satisfies Record<string, Partner>;
 

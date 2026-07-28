@@ -10,6 +10,7 @@ export const OG_HEIGHT = 630;
 // Read off the project root: these endpoints only run at build time, and the
 // bundled chunk lives somewhere else entirely, so import.meta.url is no good.
 const fontDir = join(process.cwd(), 'src/assets/fonts');
+const semibold = readFileSync(join(fontDir, 'InterTight-SemiBold.ttf'));
 const medium = readFileSync(join(fontDir, 'InterTight-Medium.ttf'));
 const regular = readFileSync(join(fontDir, 'InterTight-Regular.ttf'));
 
@@ -165,7 +166,7 @@ function eventCard(input: EventOgInput): Node {
         {
           maxWidth: 900,
           fontSize: size,
-          fontWeight: 500,
+          fontWeight: 600,
           lineHeight: 0.94,
           letterSpacing: '-0.01em',
           textTransform: 'uppercase',
@@ -183,7 +184,7 @@ function eventCard(input: EventOgInput): Node {
                     display: 'flex',
                     alignItems: 'baseline',
                     fontSize: 34,
-                    fontWeight: 500,
+                    fontWeight: 600,
                     letterSpacing: '-0.01em',
                     textTransform: 'uppercase',
                   },
@@ -231,7 +232,7 @@ function siteCard(input: SiteOgInput): Node {
       {
         maxWidth: 900,
         fontSize: 70,
-        fontWeight: 500,
+        fontWeight: 600,
         lineHeight: 0.94,
         letterSpacing: '-0.01em',
         textTransform: 'uppercase',
@@ -257,7 +258,7 @@ function siteCard(input: SiteOgInput): Node {
               text(
                 {
                   fontSize: 34,
-                  fontWeight: 500,
+                  fontWeight: 600,
                   letterSpacing: '-0.01em',
                   textTransform: 'uppercase',
                 },
@@ -286,7 +287,7 @@ function siteCard(input: SiteOgInput): Node {
         text(
           {
             fontSize: 76,
-            fontWeight: 500,
+            fontWeight: 600,
             lineHeight: 0.9,
             letterSpacing: '-0.02em',
           },
@@ -302,6 +303,7 @@ async function render(node: Node): Promise<Buffer> {
     width: OG_WIDTH,
     height: OG_HEIGHT,
     fonts: [
+      { name: 'Inter Tight', data: semibold, weight: 600, style: 'normal' },
       { name: 'Inter Tight', data: medium, weight: 500, style: 'normal' },
       { name: 'Inter Tight', data: regular, weight: 400, style: 'normal' },
     ],

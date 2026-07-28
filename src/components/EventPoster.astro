@@ -105,15 +105,23 @@ function splitLive(name: string): [string, string | null] {
       )
     }
 
+    {/* Quiet link, no rule and no chrome. Only the arrow moves — sliding the
+        label around reads as noise next to the line-up. */}
     {
       fbUrl && (
         <a
-          class="mt-2 self-start rounded-full bg-ink px-6 py-[0.85rem] text-[0.95rem] font-medium text-[var(--canvas)] no-underline transition-transform duration-200 hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none"
+          class="group mt-6 flex items-baseline gap-4 self-start no-underline focus-visible:outline-none"
           href={fbUrl}
           target="_blank"
           rel="noopener noreferrer"
         >
-          Wydarzenie na Facebooku &rarr;
+          <span class="headline text-[clamp(1.05rem,1.9vw,1.5rem)] leading-none">
+            Wydarzenie na Facebooku
+          </span>
+          <span
+            class="text-[clamp(1.05rem,1.9vw,1.5rem)] leading-none opacity-50 transition-[transform,opacity] duration-200 group-hover:translate-x-1 group-hover:opacity-100 group-focus-visible:translate-x-1 group-focus-visible:opacity-100"
+            aria-hidden="true">&rarr;</span
+          >
         </a>
       )
     }
