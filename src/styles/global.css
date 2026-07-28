@@ -38,6 +38,17 @@
   --spacing-mrow: clamp(0.4rem, 1vw, 0.8rem);
 }
 
+/* Edition-poster notes: the invitation and the date block above the title.
+   Kept as plain custom properties because the key visual's top edge is
+   computed from them — the sharp edge has to land under the FIRST line, and
+   that is a function of this padding and this line height, not a percentage of
+   however tall the page happens to be. */
+:root {
+  --note-pt: clamp(0.5rem, 2.5vh, 2rem);
+  --note-size: clamp(1rem, 1.6vw, 1.3rem);
+  --note-leading: 1.15;
+}
+
 @layer base {
   html {
     font-family: var(--font-display);
@@ -102,9 +113,61 @@
    axis is capped against the longer one so `border-radius: infinity` always
    resolves to true semicircles on the two ends. */
 
+/* The area is a sized container purely so the shapes inside can ask about its
+   aspect ratio. It is absolutely positioned over the region, so size
+   containment costs nothing — its dimensions never depend on its contents. */
+.kv-area {
+  container-type: size;
+  container-name: kvarea;
+}
+
+/* Sideways placement — the two layouts pull in opposite directions.
+   Portrait: the rectangle is NARROWER than the text column, and the halo runs
+   out to the column edge, so the overhanging letters land on the glow rather
+   than on flat canvas.
+   Landscape: the shape runs well past the text block on both sides (Figma's
+   cover has it 35% wider on the left, 21% on the right).
+   Pages override --kv-x / --kv-x-wide. */
+.kv-shapes {
+  --kv-x-resolved: var(--kv-x, 9%);
+  --kv-glow-x: calc(var(--kv-x-resolved) - 9%);
+}
+
+@container kvarea (min-aspect-ratio: 6/5) {
+  .kv-shapes {
+    /* How far the shapes may reach before running off screen: the gap between
+       the text column (100cqw) and the window, less a margin that keeps the
+       halo's outer edge in view at any width. */
+    --kv-room: max(0px, calc((100vw - 100cqw) / 2 - 16px));
+
+    /* Bleed as far as the layout wants, but never further than there is room —
+       otherwise the rectangle runs edge to edge and the glow is lost.
+       The rectangle then takes a fixed share of whatever the halo got, so the
+       two shrink together and the text keeps a margin against the rectangle's
+       edge instead of sitting flush on it when room runs out. */
+    --kv-glow-x: calc(-1 * min(27cqw, var(--kv-room)));
+    --kv-x-resolved: calc(var(--kv-glow-x) * 0.58);
+  }
+}
+
+/* Where the sharp rectangle starts. The poster layouts differ: the cycle
+   poster runs it nearly full height, an edition poster drops it below the
+   invitation / date notes. Pages override --kv-top on the key-visual region. */
 .kv-frame {
+  top: var(--kv-top, 4.8%);
+  bottom: var(--kv-bottom, 4.8%);
+  left: var(--kv-x-resolved);
+  right: var(--kv-x-resolved);
   container-type: size;
   container-name: kv;
+}
+
+/* The halo tracks the frame, spilling a little past it on every side. */
+.kv-glow {
+  top: calc(var(--kv-top, 4.8%) - 4%);
+  bottom: calc(var(--kv-bottom, 4.8%) - 4%);
+  left: var(--kv-glow-x);
+  right: var(--kv-glow-x);
 }
 
 .kv-pill {
@@ -122,7 +185,7 @@
   width: min(57cqw, 33.6cqh);
 }
 
-@container kv (min-aspect-ratio: 1/1) {
+@container kv (min-aspect-ratio: 6/5) {
   .kv-pill--glow {
     width: 86.1cqw;
     height: min(75.6cqh, 44.6cqw);

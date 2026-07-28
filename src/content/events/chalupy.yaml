@@ -11,7 +11,9 @@ address: Chałupy
 organizers:
   - UTDF
   - Drugi Dom
-invitation: 'UTDF & Drugi Dom zapraszają na:'
+invitation:
+  - UTDF & Drugi Dom
+  - 'zapraszają na:'
 details:
   - Sobota 15.08.26
   - Chałupy, wejście

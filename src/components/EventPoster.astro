@@ -50,12 +50,20 @@ function splitLive(name: string): [string, string | null] {
 }
 ---
 
-<article class="flex flex-1 flex-col gap-section">
+{/* Bottom breathing room so the last line still sits on the poster — without
+    it the content ends flush with the region and the shape cuts above it. */}
+<article class="flex flex-1 flex-col gap-section pb-[clamp(3rem,12vh,8rem)]">
   <div class="flex flex-col gap-7">
     {
       (invitation || detailLines.length > 0) && (
-        <div class="flex flex-wrap justify-between gap-x-8 gap-y-3 text-[0.9rem] leading-[1.4] font-medium">
-          {invitation && <p class="max-w-[24ch]">{invitation}</p>}
+        <div class="flex flex-wrap justify-between gap-x-8 gap-y-3 pt-[calc(var(--note-pt)+0.2rem)] text-[length:var(--note-size)] leading-[var(--note-leading)] font-semibold">
+          {invitation && (
+            <p class="flex max-w-[24ch] flex-col">
+              {invitation.map((line) => (
+                <span>{line}</span>
+              ))}
+            </p>
+          )}
           {detailLines.length > 0 && (
             <div class="ml-auto flex flex-col text-right">
               {detailLines.map((line) => (
@@ -67,7 +75,9 @@ function splitLive(name: string): [string, string | null] {
       )
     }
 
-    <h1 class="headline text-title">{title}</h1>
+    {/* Balanced so a long edition name breaks into even lines instead of
+        running the full column and leaving one word stranded. */}
+    <h1 class="headline text-title max-w-[22ch] text-balance">{title}</h1>
 
     {
       artists.length > 0 ? (

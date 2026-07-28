@@ -6,7 +6,9 @@ city: Wasilków
 month: 2026-07
 organizers:
   - UTDF
-invitation: 'UTDF zaprasza na:'
+invitation:
+  - UTDF
+  - 'zaprasza na:'
 artists:
   - Tomasz Mreńca live
   - Botanica

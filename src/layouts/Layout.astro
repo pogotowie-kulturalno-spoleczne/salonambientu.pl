@@ -15,6 +15,9 @@ interface Props {
   partnerKeys?: readonly string[];
   /** Site-relative path to this page's generated social card. */
   ogPath?: string;
+  /** Where the key visual's sharp rectangle starts / ends, e.g. "8%". */
+  kvTop?: string;
+  kvBottom?: string;
 }
 
 const {
@@ -25,7 +28,16 @@ const {
   palettes = [],
   partnerKeys = [],
   ogPath = '/og.png',
+  kvTop,
+  kvBottom,
 } = Astro.props;
+
+const kvStyle = [
+  kvTop && `--kv-top:${kvTop}`,
+  kvBottom && `--kv-bottom:${kvBottom}`,
+]
+  .filter(Boolean)
+  .join(';');
 
 const themeStyles = themeBlocks(palettes);
 
@@ -89,7 +101,10 @@ const TYPEKIT_KIT_ID = 'wpm5boa';
     >
       {/* The glow only backs the content; the logo footer sits below it on the
           flat canvas, as in the Figma layout. */}
-      <div class="relative flex w-full max-w-poster flex-1 flex-col">
+      <div
+        class="relative flex w-full max-w-poster flex-1 flex-col"
+        style={kvStyle || undefined}
+      >
         <KeyVisual />
         <slot />
       </div>

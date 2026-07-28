@@ -31,8 +31,14 @@ const events = defineCollection({
     address: z.string().optional(),
     artists: z.array(artist).default([]),
     organizers: z.array(z.string()).optional(),
-    /** top-left note on the subpage, e.g. "UTDF & Drugi Dom zapraszają na:" */
-    invitation: z.string().optional(),
+    /**
+     * Top-left note on the subpage. Given as lines, because the posters break
+     * it deliberately — the verb sits on its own line under the organisers.
+     */
+    invitation: z
+      .union([z.string(), z.array(z.string())])
+      .transform((v) => (Array.isArray(v) ? v : [v]))
+      .optional(),
     /** top-right note; falls back to date / venue / location / time */
     details: z.array(z.string()).optional(),
     /** edition-only partners, named in a sentence on the subpage */
