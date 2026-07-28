@@ -28,28 +28,5 @@ const months = groupByMonth(events);
   }
 </div>
 
-<script>
-  // Desktop progressive enhancement: hovering/focusing an event re-themes the
-  // background. On leave/blur, revert to the soonest-event default.
-  const list = document.getElementById('event-list');
-  const bg = document.getElementById('poster-bg');
-
-  if (list && bg) {
-    const defaultTheme = list.dataset.defaultTheme ?? bg.dataset.theme ?? '';
-
-    const setTheme = (theme: string) => {
-      if (theme) bg.dataset.theme = theme;
-    };
-
-    list.querySelectorAll<HTMLElement>('[data-theme]').forEach((row) => {
-      const theme = row.dataset.theme ?? '';
-      row.addEventListener('mouseenter', () => setTheme(theme));
-      row.addEventListener('focusin', () => setTheme(theme));
-    });
-
-    list.addEventListener('mouseleave', () => setTheme(defaultTheme));
-    list.addEventListener('focusout', (e) => {
-      if (!list.contains(e.relatedTarget as Node)) setTheme(defaultTheme);
-    });
-  }
-</script>
+{/* Hover re-theming is wired globally in Layout.astro, by delegation over
+    anything carrying data-theme. */}

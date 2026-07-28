@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
 import KeyVisual from '../components/KeyVisual.astro';
 import Footer from '../components/Footer.astro';
 import GrantNotice from '../components/GrantNotice.astro';
@@ -89,6 +90,10 @@ const TYPEKIT_KIT_ID = 'wpm5boa';
       )
     }
 
+    {/* Cross-document view transitions: the key visual's shapes carry
+        view-transition-names, so the browser morphs them between pages. */}
+    <ClientRouter />
+
     <slot name="head" />
   </head>
   <body>
@@ -115,5 +120,99 @@ const TYPEKIT_KIT_ID = 'wpm5boa';
     <style is:inline set:html={themeStyles}></style>
 
     <GrantNotice />
+
+    <script>
+      import { navigate } from 'astro:transitions/client';
+
+      const root = document.documentElement;
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const INTRO_MS = 6400;
+      const OUT_MS = 420;
+
+      let timer: number | undefined;
+
+      /**
+       * The intro itself is pure CSS — it runs while `data-kv-ready` is absent.
+       * This just marks the end of it, handing the halos over to the idle
+       * breathing loop.
+       */
+      /** The palette the current page rests on when nothing is hovered. */
+      let baseTheme = '';
+
+      function poster() {
+        return document.getElementById('poster-bg');
+      }
+
+      function setTheme(theme: string | undefined) {
+        const bg = poster();
+        if (bg && theme) bg.dataset.theme = theme;
+      }
+
+      function lightUp() {
+        window.clearTimeout(timer);
+        baseTheme = poster()?.dataset.theme ?? '';
+        root.removeAttribute('data-kv-out');
+        if (reduce) {
+          root.setAttribute('data-kv-ready', '');
+          return;
+        }
+        root.removeAttribute('data-kv-ready');
+        timer = window.setTimeout(() => root.setAttribute('data-kv-ready', ''), INTRO_MS);
+      }
+
+      lightUp();
+
+      /**
+       * Hovering anything that names a palette previews it on the background:
+       * an edition row on the homepage, the back control on a subpage. Wired
+       * by delegation so it survives navigations and covers new markup.
+       */
+      const THEMED = '[data-theme]:not(#poster-bg)';
+
+      function preview(event: Event) {
+        const el = (event.target as Element | null)?.closest?.(THEMED);
+        if (el instanceof HTMLElement) setTheme(el.dataset.theme);
+      }
+
+      function revert(event: Event) {
+        const el = (event.target as Element | null)?.closest?.(THEMED);
+        if (!el) return;
+        const to = (event as MouseEvent | FocusEvent).relatedTarget;
+        if (to instanceof Node && el.contains(to)) return;
+        setTheme(baseTheme);
+      }
+
+      document.addEventListener('pointerover', preview);
+      document.addEventListener('pointerout', revert);
+      document.addEventListener('focusin', preview);
+      document.addEventListener('focusout', revert);
+
+      /**
+       * Drive the navigation ourselves so the halos have time to go dark
+       * before the swap: fade, then hand over to the router.
+       */
+      document.addEventListener('click', (event) => {
+        if (reduce || event.defaultPrevented) return;
+        const e = event as MouseEvent;
+        if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+
+        const link = (e.target as Element | null)?.closest?.('a[href]') as
+          | HTMLAnchorElement
+          | null;
+        if (!link || (link.target && link.target !== '_self')) return;
+        if (link.hasAttribute('download') || link.dataset.astroReload !== undefined) return;
+
+        const url = new URL(link.href, location.href);
+        if (url.origin !== location.origin) return;
+        if (url.pathname === location.pathname) return;
+
+        e.preventDefault();
+        root.setAttribute('data-kv-out', '');
+        window.setTimeout(() => navigate(url.href), OUT_MS);
+      });
+
+      // New page, new palette — light it up from scratch.
+      document.addEventListener('astro:after-swap', lightUp);
+    </script>
   </body>
 </html>

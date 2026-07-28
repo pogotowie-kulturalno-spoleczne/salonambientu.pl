@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import EventPoster from '../../components/EventPoster.astro';
 import { getPublicEvents } from '../../lib/events';
+import { defaultPalette } from '../../lib/themes';
 
 export async function getStaticPaths() {
   // Announced editions only — a secret edition gets no URL to find.
@@ -64,7 +65,11 @@ const jsonLd = {
   title={title}
   description={description}
   defaultTheme={event.themeKey}
-  palettes={[{ key: event.themeKey, palette: event.palette }]}
+  palettes={[
+    { key: event.themeKey, palette: event.palette },
+    // Hovering the back control previews where it leads.
+    { key: 'home', palette: defaultPalette },
+  ]}
   partnerKeys={event.partners}
   ogPath={`/wydarzenia/${event.id}/og.png`}
   kvTop="calc(var(--note-pt) + var(--note-leading) * var(--note-size) + 0.3rem)"
@@ -81,6 +86,7 @@ const jsonLd = {
   <a
     class="fixed bottom-gutter left-gutter z-20 flex size-12 items-center justify-center rounded-full bg-ink text-lg text-[var(--canvas)] no-underline transition-transform duration-200 hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none"
     href="/"
+    data-theme="home"
     aria-label="Wróć do wszystkich edycji"
   >
     &larr;
