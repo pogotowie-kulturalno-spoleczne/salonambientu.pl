@@ -28,11 +28,36 @@ const when = event.date
       timeZone: 'UTC',
     }).format(new Date(`${event.month}-01T00:00:00Z`));
 
+const whenLabel = when.charAt(0).toUpperCase() + when.slice(1);
+
 const description = [
   `${event.title}.`,
-  `${when}, ${event.venue ?? event.location}.`,
-  event.artists.length ? `Line-up: ${event.artists.join(', ')}.` : 'Line-up wkrótce.',
+  `${whenLabel}, ${event.venue ?? event.location}.`,
+  event.artists.length
+    ? `Line-up: ${event.artists.map((a) => a.name).join(', ')}.`
+    : 'Line-up wkrótce.',
 ].join(' ');
+
+// Home → this edition. There is no section index: the homepage is the archive
+// of the cycle, and /wydarzenia redirects there (netlify.toml).
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Salony Ambientu',
+      item: Astro.site?.toString(),
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: event.title,
+      item: new URL(`/wydarzenia/${event.id}`, Astro.site).toString(),
+    },
+  ],
+};
 ---
 
 <Layout
@@ -43,6 +68,12 @@ const description = [
   partnerKeys={event.partners}
   ogPath={`/wydarzenia/${event.id}/og.png`}
 >
+  <script
+    type="application/ld+json"
+    slot="head"
+    set:html={JSON.stringify(jsonLd)}
+  />
+
   {/* Floating control rather than a link above the headline — anything in the
       flow there pushes the title off the key visual and breaks the effect. */}
   <a

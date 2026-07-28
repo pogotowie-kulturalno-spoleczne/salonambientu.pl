@@ -43,7 +43,11 @@ const jsonLd = {
         name: e.venue ?? e.location,
         address: e.address ?? e.city ?? e.location,
       },
-      performer: e.artists.map((a) => ({ '@type': 'MusicGroup', name: a })),
+      performer: e.artists.map((a) => ({
+        '@type': 'MusicGroup',
+        name: a.name,
+        ...(a.url ? { sameAs: a.url } : {}),
+      })),
       organizer: (e.organizers ?? []).map((o) => ({ '@type': 'Organization', name: o })),
       url: new URL(`/wydarzenia/${e.id}`, Astro.site).toString(),
     })),

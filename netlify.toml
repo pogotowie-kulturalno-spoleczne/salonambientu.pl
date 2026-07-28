@@ -5,3 +5,16 @@
 [build.environment]
   # Astro 7 needs 20.19+ / 22.12+; sharp and satori run the OG image build.
   NODE_VERSION = "22"
+
+# The homepage is the archive of the cycle, so the section index would only
+# duplicate it. Send the bare path there instead of leaving a dead end.
+# Revisit once a second year needs a real /wydarzenia archive.
+[[redirects]]
+  from = "/wydarzenia"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/wydarzenia/"
+  to = "/"
+  status = 301
