@@ -133,7 +133,7 @@
   --kv-glow-x: calc(var(--kv-x-resolved) - 9%);
 }
 
-@container kvarea (min-aspect-ratio: 6/5) {
+@container kvarea (min-aspect-ratio: 19/20) {
   .kv-shapes {
     /* How far the shapes may reach before running off screen: the gap between
        the text column (100cqw) and the window, less a margin that keeps the
@@ -185,7 +185,7 @@
   width: min(57cqw, 33.6cqh);
 }
 
-@container kv (min-aspect-ratio: 6/5) {
+@container kv (min-aspect-ratio: 19/20) {
   .kv-pill--glow {
     width: 86.1cqw;
     height: min(75.6cqh, 44.6cqw);
