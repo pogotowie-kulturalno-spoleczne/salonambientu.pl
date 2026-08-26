@@ -149,8 +149,8 @@ export interface EventOgInput {
   title: string;
   invitation?: string;
   details: string[];
-  /** line-up, already split into name + optional "live" suffix */
-  artists: { name: string; live: boolean }[];
+  /** line-up, already split into name + optional role suffix ("live", …) */
+  artists: { name: string; role?: string }[];
   palette: ThemePalette;
 }
 
@@ -190,7 +190,7 @@ function eventCard(input: EventOgInput): Node {
                   },
                   [
                     text({}, a.name),
-                    ...(a.live
+                    ...(a.role
                       ? [
                           text(
                             {
@@ -200,7 +200,7 @@ function eventCard(input: EventOgInput): Node {
                               textTransform: 'lowercase',
                               letterSpacing: 0,
                             },
-                            'live'
+                            a.role
                           ),
                         ]
                       : []),

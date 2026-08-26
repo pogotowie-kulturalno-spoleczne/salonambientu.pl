@@ -20,10 +20,10 @@ export interface ThemePalette {
   glow: string;
 }
 
-/** Warm yellow — the house pair, used by every edition without its own. */
+/** Mauve — the house pair, used by every edition without its own. */
 export const defaultPalette: ThemePalette = {
-  canvas: '#f3c962',
-  glow: '#fffdf0',
+  canvas: '#c5b2cd',
+  glow: '#f8cfd2',
 };
 
 /** The pair from the 2026 cycle poster, kept for reference. */

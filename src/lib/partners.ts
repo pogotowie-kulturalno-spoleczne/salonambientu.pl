@@ -41,13 +41,19 @@ export const partners = {
   moak: { label: 'MOAK Wasilków', src: '/logos/moak.svg', height: 45 },
   harmony: { label: 'Harmony Oils', src: '/logos/harmony-oils.svg', height: 40 },
   dwby: {
-    label: "Fundacja Don't Worry Be Myself",
+    label: "Fundacja Don't Worry Be Yourself",
     src: '/logos/fundacja-dont-worry.svg',
     height: 40,
   },
   drugidom: { label: 'Drugi Dom', src: '/logos/drugi-dom.svg', height: 32 },
   // No logo file yet — renders as its name until one lands.
   wodociagi: { label: 'Wodociągi Białostockie', height: 40 },
+  sppzoz: {
+    label: 'Samodzielny Publiczny Psychiatryczny ZOZ w Choroszczy',
+    height: 40,
+  },
+  podlaskie: { label: 'Województwo Podlaskie', height: 40 },
+  choroszcz: { label: 'Gmina Choroszcz', height: 40 },
 } as const satisfies Record<string, Partner>;
 
 export type PartnerKey = keyof typeof partners;

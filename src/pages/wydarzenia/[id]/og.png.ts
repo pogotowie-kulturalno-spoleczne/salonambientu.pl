@@ -37,11 +37,15 @@ export const GET: APIRoute = async ({ props }) => {
 
   const png = await renderEventOg({
     title: event.title,
-    invitation: event.invitation,
+    // The YAML keeps the poster's deliberate line breaks; the card is a
+    // different width, so it wraps the note itself.
+    invitation: event.invitation?.join(' '),
     details,
     artists: event.artists.map((a) => {
-      const match = a.name.match(/^(.*?)\s+live$/i);
-      return match ? { name: match[1], live: true } : { name: a.name, live: false };
+      const match = a.name.match(/^(.*?)\s+(live|narrator)$/i);
+      return match
+        ? { name: match[1], role: match[2].toLowerCase() }
+        : { name: a.name };
     }),
     palette: event.palette,
   });

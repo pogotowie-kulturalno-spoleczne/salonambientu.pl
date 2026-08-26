@@ -1,0 +1,47 @@
+id: choroszcz
+title: I Salon Ambientu w Choroszczy
+edition: I
+location: Choroszcz
+city: Choroszcz
+month: 2026-09
+date: 2026-09-06
+time: 15:00–21:00
+venue: SPP ZOZ w Choroszczy
+address: Plac im. dr. Z. Brodowicza 1
+organizers:
+  - UTDF
+  - Fundacja DWBY
+  - SPP ZOZ w Choroszczy
+invitation:
+  - UTDF & Fundacja DWBY
+  - '& SPP ZOZ w Choroszczy'
+  - 'zapraszają na:'
+details:
+  - Niedziela 06.09.26
+  - SPP ZOZ w Choroszczy
+  - Plac im. dr. Z. Brodowicza 1
+  - 15:00 – 21:00
+artists:
+  - Martina Bertoni live
+  - Błażej Malinowski live
+  - Cezaria
+  - name: Dtekk
+    url: https://soundcloud.com/dtekk
+  - Marcin Tomkiel narrator
+fbUrl: https://www.facebook.com/events/1072435875252806/
+links:
+  - label: Przeczytaj więcej o I Salonie Ambientu w Choroszczy
+    url: https://dwby.pl/projekty/jade-do-choroszczy/
+# keys into the partner database in src/lib/partners.ts
+partners:
+  - dwby
+  - sppzoz
+  - podlaskie
+  - choroszcz
+  - agnella
+  - harmony
+# Edition colour: Pantone 15-6428 TCX "Green Tea" as the canvas; the glow is
+# the poster's own halo peak.
+colors:
+  canvas: '#88ab75'
+  glow: '#efffe0'

@@ -19,6 +19,12 @@ const {
   fbUrl,
 } = event;
 
+// The Facebook event first, then whatever else the edition points at.
+const links = [
+  ...(fbUrl ? [{ label: 'Wydarzenie na Facebooku', url: fbUrl }] : []),
+  ...event.links,
+];
+
 // Day-precision once the date is announced, month-precision until then.
 const dayFormat = new Intl.DateTimeFormat('pl-PL', {
   weekday: 'long',
@@ -41,11 +47,12 @@ const dateFormatted = rawDate.charAt(0).toUpperCase() + rawDate.slice(1);
 const detailLines = details ?? [dateFormatted, venue, location, time].filter(Boolean);
 
 /**
- * The poster sets a trailing "live" in the light roman rather than the medium
- * caps the name uses. Split it off so the markup can do the same.
+ * The poster sets a trailing role — "live", "narrator" — in the light roman
+ * rather than the medium caps the name uses. Split it off so the markup can do
+ * the same.
  */
-function splitLive(name: string): [string, string | null] {
-  const match = name.match(/^(.*?)\s+(live)$/i);
+function splitRole(name: string): [string, string | null] {
+  const match = name.match(/^(.*?)\s+(live|narrator)$/i);
   return match ? [match[1], match[2].toLowerCase()] : [name, null];
 }
 ---
@@ -83,12 +90,12 @@ function splitLive(name: string): [string, string | null] {
       artists.length > 0 ? (
         <ul class="headline text-artist leading-[1.1]">
           {artists.map((a) => {
-            const [name, live] = splitLive(a.name);
+            const [name, role] = splitRole(a.name);
             const inner = (
               <>
                 {name}
-                {live && (
-                  <span class="font-normal tracking-normal normal-case"> {live}</span>
+                {role && (
+                  <span class="font-normal tracking-normal normal-case"> {role}</span>
                 )}
               </>
             );
@@ -115,24 +122,32 @@ function splitLive(name: string): [string, string | null] {
       )
     }
 
-    {/* Quiet link, no rule and no chrome. Only the arrow moves — sliding the
+    {/* Quiet links, no rules and no chrome. Only the arrow moves — sliding the
         label around reads as noise next to the line-up. */}
     {
-      fbUrl && (
-        <a
-          class="group mt-6 flex items-baseline gap-4 self-start no-underline focus-visible:outline-none"
-          href={fbUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <span class="headline text-[clamp(1.05rem,1.9vw,1.5rem)] leading-none">
-            Wydarzenie na Facebooku
-          </span>
-          <span
-            class="text-[clamp(1.05rem,1.9vw,1.5rem)] leading-none opacity-50 transition-[transform,opacity] duration-200 group-hover:translate-x-1 group-hover:opacity-100 group-focus-visible:translate-x-1 group-focus-visible:opacity-100"
-            aria-hidden="true">&rarr;</span
-          >
-        </a>
+      links.length > 0 && (
+        <ul class="mt-6 flex flex-col items-start gap-2">
+          {links.map((link) => (
+            <li>
+              <a
+                class="group flex items-baseline gap-4 no-underline focus-visible:outline-none"
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span class="headline text-[clamp(1.05rem,1.9vw,1.5rem)] leading-none">
+                  {link.label}
+                </span>
+                <span
+                  class="text-[clamp(1.05rem,1.9vw,1.5rem)] leading-none opacity-50 transition-[transform,opacity] duration-200 group-hover:translate-x-1 group-hover:opacity-100 group-focus-visible:translate-x-1 group-focus-visible:opacity-100"
+                  aria-hidden="true"
+                >
+                  &rarr;
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
       )
     }
   </div>

@@ -44,6 +44,13 @@ const events = defineCollection({
     /** edition-only partners, named in a sentence on the subpage */
     partners: z.array(z.string()).default([]),
     fbUrl: z.string().url().optional(),
+    /**
+     * Further reading, under the line-up: a partner's write-up, a programme
+     * note. Rendered with the same quiet treatment as the Facebook link.
+     */
+    links: z
+      .array(z.object({ label: z.string(), url: z.string().url() }))
+      .default([]),
 
     /** tiebreaker inside one month, low first (poster order) */
     order: z.number().default(0),
