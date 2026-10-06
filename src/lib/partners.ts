@@ -46,14 +46,60 @@ export const partners = {
     height: 40,
   },
   drugidom: { label: 'Drugi Dom', src: '/logos/drugi-dom.svg', height: 32 },
-  // No logo file yet — renders as its name until one lands.
-  wodociagi: { label: 'Wodociągi Białostockie', height: 40 },
-  sppzoz: {
-    label: 'Samodzielny Publiczny Psychiatryczny ZOZ w Choroszczy',
+  wodociagi: {
+    label: 'Wodociągi Białostockie',
+    src: '/logos/wodociagi-bialostockie.svg',
+    href: 'https://www.wobi.pl',
+    height: 32,
+  },
+  podlaskie: {
+    label: 'Województwo Podlaskie',
+    src: '/logos/podlaskie.svg',
+    href: 'https://podlaskie.eu',
+    height: 45,
+  },
+  choroszcz: {
+    label: 'Gmina Choroszcz',
+    src: '/logos/choroszcz.svg',
+    href: 'https://choroszcz.pl',
+    height: 45,
+  },
+  komuna: {
+    label: 'Teatr Komuna Warszawa',
+    src: '/logos/teatr-komuna.svg',
+    href: 'https://komuna.warszawa.pl',
     height: 40,
   },
-  podlaskie: { label: 'Województwo Podlaskie', height: 40 },
-  choroszcz: { label: 'Gmina Choroszcz', height: 40 },
+  poznan: {
+    label: 'Miasto Poznań',
+    src: '/logos/poznan.svg',
+    href: 'https://www.poznan.pl',
+    height: 32,
+  },
+  pawilon: {
+    label: 'Pawilon',
+    src: '/logos/pawilon.svg',
+    href: 'https://pawilon.org',
+    height: 30,
+  },
+  mjp: {
+    label: 'MJP Drukarnia',
+    src: '/logos/mjp-drukarnia.svg',
+    href: 'https://www.mjp.eu',
+    height: 35,
+  },
+  vinylgate: {
+    label: 'Vinylgate',
+    src: '/logos/vinylgate.svg',
+    href: 'http://www.vinylgate.eu',
+    height: 45,
+  },
+  // Raster-only upstream — renders as its name until a vector lands.
+  sppzoz: {
+    label: 'Samodzielny Publiczny Psychiatryczny ZOZ w Choroszczy',
+    href: 'https://sppchoroszcz.med.pl',
+    height: 40,
+  },
 } as const satisfies Record<string, Partner>;
 
 export type PartnerKey = keyof typeof partners;

@@ -1,0 +1,38 @@
+id: warszawa
+title: XXI Warszawski Salon Ambientu
+edition: XXI
+location: Warszawa
+city: Warszawa
+month: 2026-10
+date: 2026-10-29
+time: 18:30–22:00
+venue: Teatr Komuna
+address: Emilii Plater 31
+organizers:
+  - UTDF
+  - Teatr Komuna
+invitation:
+  - Up To Date Festival
+  - '& Teatr Komuna'
+  - 'zapraszają na:'
+details:
+  - Czwartek 29.10.26
+  - Teatr Komuna,
+  - Emilii Plater 31,
+  - 18:30 – 22:00
+artists:
+  - Yoichi Kamimura
+  - Uszko
+  - name: Dtekk
+    url: https://soundcloud.com/dtekk
+  - Julian Świeżewski narrator
+fbUrl: https://www.facebook.com/events/2614861825698049/
+# keys into the partner database in src/lib/partners.ts
+partners:
+  - komuna
+  - agnella
+  - harmony
+# From the edition poster: the flat field / shape fill, and the halo peak.
+colors:
+  canvas: '#f9dd86'
+  glow: '#f7cc59'

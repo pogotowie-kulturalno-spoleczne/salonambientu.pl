@@ -1,5 +1,5 @@
 ---
-import type { EventView } from '../lib/events';
+import { splitRole, type EventView } from '../lib/events';
 
 interface Props {
   event: EventView;
@@ -45,16 +45,6 @@ const dateFormatted = rawDate.charAt(0).toUpperCase() + rawDate.slice(1);
 
 // Right-hand note: whatever the edition spells out, else what we can derive.
 const detailLines = details ?? [dateFormatted, venue, location, time].filter(Boolean);
-
-/**
- * The poster sets a trailing role — "live", "narrator" — in the light roman
- * rather than the medium caps the name uses. Split it off so the markup can do
- * the same.
- */
-function splitRole(name: string): [string, string | null] {
-  const match = name.match(/^(.*?)\s+(live|narrator)$/i);
-  return match ? [match[1], match[2].toLowerCase()] : [name, null];
-}
 ---
 
 {/* Bottom breathing room so the last line still sits on the poster — without
@@ -90,7 +80,7 @@ function splitRole(name: string): [string, string | null] {
       artists.length > 0 ? (
         <ul class="headline text-artist leading-[1.1]">
           {artists.map((a) => {
-            const [name, role] = splitRole(a.name);
+            const { name, role } = splitRole(a.name);
             const inner = (
               <>
                 {name}

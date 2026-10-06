@@ -149,7 +149,7 @@ export interface EventOgInput {
   title: string;
   invitation?: string;
   details: string[];
-  /** line-up, already split into name + optional role suffix ("live", …) */
+  /** line-up, already split into name + optional role ("live", "pres. …") */
   artists: { name: string; role?: string }[];
   palette: ThemePalette;
 }
@@ -197,7 +197,7 @@ function eventCard(input: EventOgInput): Node {
                               marginLeft: 10,
                               fontSize: 28,
                               fontWeight: 400,
-                              textTransform: 'lowercase',
+                              textTransform: 'none',
                               letterSpacing: 0,
                             },
                             a.role

@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { getPublicEvents, type EventView } from '../../../lib/events';
+import { getPublicEvents, splitRole, type EventView } from '../../../lib/events';
 import { renderEventOg } from '../../../lib/og';
 
 /** Announced editions only — a secret edition gets no card, as it gets no page. */
@@ -41,12 +41,7 @@ export const GET: APIRoute = async ({ props }) => {
     // different width, so it wraps the note itself.
     invitation: event.invitation?.join(' '),
     details,
-    artists: event.artists.map((a) => {
-      const match = a.name.match(/^(.*?)\s+(live|narrator)$/i);
-      return match
-        ? { name: match[1], role: match[2].toLowerCase() }
-        : { name: a.name };
-    }),
+    artists: event.artists.map((a) => splitRole(a.name)),
     palette: event.palette,
   });
 

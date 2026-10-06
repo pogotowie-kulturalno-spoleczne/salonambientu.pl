@@ -4,6 +4,16 @@ import { paletteFor, type ThemePalette } from './themes';
 export type EventData = CollectionEntry<'events'>['data'];
 
 /**
+ * The posters set a trailing role — "live", "narrator", a "pres. …" project
+ * credit — in the light roman rather than the medium caps the name uses. The
+ * YAML writes it as it should read; this splits it off for the markup.
+ */
+export function splitRole(name: string): { name: string; role?: string } {
+  const match = name.match(/^(.*?)\s+(live|narrator|pres\.\s.+)$/);
+  return match ? { name: match[1], role: match[2] } : { name };
+}
+
+/**
  * An edition plus its background palette key.
  *
  * Secret editions get a positional key (`e3`) rather than their slug — the key

@@ -1,0 +1,41 @@
+id: poznan
+title: V Poznański Salon Ambientu
+edition: V
+location: Poznań
+city: Poznań
+month: 2026-10
+date: 2026-10-18
+venue: Pawilon
+address: ul. Ewangelicka 1
+organizers:
+  - UTDF
+  - Vinylgate
+  - Pawilon
+invitation:
+  - Up To Date Festival,
+  - Vinylgate & Pawilon
+  - 'zapraszają na:'
+details:
+  - Niedziela 18.10.26
+  - Pawilon,
+  - ul. Ewangelicka 1,
+  - Poznań
+artists:
+  - Dave Huismans pres. In Transit
+  - name: Feelaz
+    url: https://soundcloud.com/feelaz
+  - name: Dtekk
+    url: https://soundcloud.com/dtekk
+fbUrl: https://www.facebook.com/events/28824485793908618/
+# keys into the partner database in src/lib/partners.ts
+partners:
+  - poznan
+  - pawilon
+  - agnella
+  - harmony
+  - vinylgate
+  - mjp
+# From the edition poster: the flat field / shape fill, and the halo peak.
+colors:
+  canvas: '#b5a5ca'
+  glow: '#e6cee6'
