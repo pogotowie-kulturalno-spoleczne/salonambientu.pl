@@ -96,3 +96,10 @@ const jsonLd = {
     <EventPoster event={event} />
   </main>
 </Layout>
+
+<style is:global>
+  /* Room under the grant logos so the floating back button never parks on them. */
+  body {
+    padding-bottom: calc(var(--spacing-gutter) + 1rem);
+  }
+</style>
