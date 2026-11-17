@@ -1,0 +1,50 @@
+id: gdansk
+title: IX Pomorski Salon Ambientu
+edition: IX
+location: Gdańsk
+city: Gdańsk
+month: 2026-11
+date: 2026-11-29
+time: 18:30–22:30
+address: Targ Rakowy 11
+organizers:
+  - UTDF
+  - IKM
+  - Miasto Gdańsk
+invitation:
+  - UTDF, IKM
+  - '& Miasto Gdańsk'
+  - 'zapraszają na:'
+details:
+  - Niedziela 29.11.26
+  - Targ Rakowy 11
+  - Gdańsk
+  - 18:30 – 22:30
+artists:
+  - Perila live
+  - Ulla live
+  - name: Dtekk
+    url: https://soundcloud.com/dtekk
+  - Filip Zaręba narrator
+links:
+  - label: Bilety
+    url: https://bilety.ikm.gda.pl/rezerwacja/nienumerowane.html?id=28948&idt=b7576a09a21308c23ca093d744c26802&d=3&idg=3&idw=1870
+description: >-
+  Po raz dziewiąty spotkamy się na Pomorskim Salonie Ambientu, ponownie we
+  współpracy z Instytutem Kultury Miejskiej w Gdańsku, zapraszamy do
+  przestrzeni dedykowanej kulturze kontemplacji, głębokiemu skupieniu
+  i regeneracji zmysłów w warunkach bezkompromisowej Strefy Ciszy.
+# keys into the partner database in src/lib/partners.ts
+partners:
+  - ikm
+  - gdansk
+  - agnella
+  - harmony
+  - radiogdansk
+  - prestiz
+  - naszemiasto
+  - trojmiasto
+# From the edition poster: the flat field / shape fill, and the halo peak.
+colors:
+  canvas: '#d3a1a2'
+  glow: '#fcc1b3'

@@ -31,7 +31,7 @@ const when = event.date
 
 const whenLabel = when.charAt(0).toUpperCase() + when.slice(1);
 
-const description = [
+const description = event.description ?? [
   `${event.title}.`,
   `${whenLabel}, ${event.venue ?? event.location}.`,
   event.artists.length

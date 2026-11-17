@@ -44,6 +44,8 @@ const events = defineCollection({
     /** edition-only partners, named in a sentence on the subpage */
     partners: z.array(z.string()).default([]),
     fbUrl: z.string().url().optional(),
+    /** meta / OG description; falls back to one built from title, date, line-up */
+    description: z.string().optional(),
     /**
      * Further reading, under the line-up: a partner's write-up, a programme
      * note. Rendered with the same quiet treatment as the Facebook link.

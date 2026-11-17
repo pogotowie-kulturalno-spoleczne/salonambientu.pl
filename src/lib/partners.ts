@@ -100,6 +100,42 @@ export const partners = {
     href: 'https://sppchoroszcz.med.pl',
     height: 40,
   },
+  gdansk: {
+    label: 'Miasto Gdańsk',
+    src: '/logos/gdansk.svg',
+    href: 'https://www.gdansk.pl',
+    height: 45,
+  },
+  ikm: {
+    label: 'Instytut Kultury Miejskiej',
+    src: '/logos/ikm.svg',
+    href: 'https://ikm.gda.pl',
+    height: 40,
+  },
+  radiogdansk: {
+    label: 'Radio Gdańsk',
+    src: '/logos/radio-gdansk.svg',
+    href: 'https://radiogdansk.pl',
+    height: 30,
+  },
+  prestiz: {
+    label: 'Prestiż',
+    src: '/logos/prestiz.svg',
+    href: 'https://prestiztrojmiasto.pl',
+    height: 35,
+  },
+  trojmiasto: {
+    label: 'trojmiasto.pl',
+    src: '/logos/trojmiasto.svg',
+    href: 'https://www.trojmiasto.pl',
+    height: 35,
+  },
+  naszemiasto: {
+    label: 'Nasze Miasto Gdańsk',
+    src: '/logos/nasze-miasto.svg',
+    href: 'https://gdansk.naszemiasto.pl',
+    height: 40,
+  },
 } as const satisfies Record<string, Partner>;
 
 export type PartnerKey = keyof typeof partners;
